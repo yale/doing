@@ -3,33 +3,96 @@
 </head>
 
 <body>
-  {{> app}}
+  <div class="container" id="container">
+    {{> app}}
+  </div>
 </body>
 
 <template name="app">
-  <h1>Doing</h1>
-  <p>Shift+Enter to create a task</p>
+  {{>navbar}}
+  {{#if currentUser}}
+    {{>lists}}
+  {{else}}
+    <div class="jumbotron">
+      <h2>Please log in with Github to begin</h2>
+    </div>
+  {{/if}}
+</template>
+
+<template name="navbar">
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse"
+      data-target="#bs-example-navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">Doing</a>
+  </div>
+  {{#if currentUser}}
+    {{>toolbar}}
+  {{/if}}
+  <div id="accounts-ui" class="nav navbar-nav navbar-right">
+    {{loginButtons}}
+  </div>
+</nav>
+</template>
+
+<template name="lists">
+{{#each lists}}
+  {{>list}}
+{{/each}}
+<div class="task-list empty">
+  <a id="new-list" class="btn btn-lg btn-default">
+    <i class="glyphicon glyphicon-plus"></i>
+    New List
+  </a>
+</div>
+</template>
+
+<template name="list">
+<div data-id="{{ _id }}" class="task-list panel panel-default">
+  <div class="panel-heading">
+    {{#if editingList}}
+    <input placeholder="New List" autofocus=autofocus id="list-{{_id}}"
+    value="{{name}}" />
+    <a class="btn btn-xs btn-danger" id="delete-list" href="#">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+    {{else}}
+    <span class="name">{{name}}</span>
+    {{/if}}
+    <a class="pull-right btn btn-xs btn-primary" id="new-task" href="#">
+      <i class="glyphicon glyphicon-plus"></i>
+      Task
+    </a>
+  </div>
+  <div class="panel-body">
   {{>tasks}}
+  </div>
+</div>
 </template>
 
 <template name="tasks">
-{{>toolbar}}
-<ul class="tasks">
-{{#each tasks}}
-  {{>task}}
-{{/each}}
-</ul>
+  <ul class="tasks">
+  {{#each tasks}}
+    {{>task}}
+  {{/each}}
+  </ul>
 </template>
 
 <template name="toolbar">
-<a id="new-task" href="#">New Task</a>
-
-{{#if hidingCompleted}}
-<a id="hide-completed" href="#">Show Completed</a>
-{{else}}
-<a id="hide-completed" href="#">Hide Completed</a>
-{{/if}}
-<a id="clear-all" href="#">Clear All</a>
+<ul class="nav navbar-nav">
+<li>
+  <a id="hide-completed" href="#">
+    {{#if hidingCompleted}}Show{{else}}Hide{{/if}} Completed
+  </a>
+</li>
+<li><a id="clear-all" href="#">Clear All</a></li>
+</ul>
 </template>
 
 <template name="task">
