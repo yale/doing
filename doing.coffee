@@ -24,12 +24,23 @@ if Meteor.isClient
   complete = (task, complete=true) ->
     task.completed = complete
     Tasks.update task._id, task
+
+  # Template.app.rendered = ->
+  #   $("#container").click (e) ->
+  #     console.log e.target
+  #     if e.target.tagName == "body" || e.target.id == "container"
+  #       Session.set "selected-task", null
     
   Template.toolbar.hidingCompleted = -> 
     Session.get("hide-completed")
     
   Template.toolbar.events =
-    "click #new-list": -> newList()
+    "click #new-list": -> 
+      if Session.get "editing-list"
+        alert("Finish editing your list and try again")
+        $("#list-form input").focus()
+        return 
+      newList()
     "click #clear-all-lists": -> Meteor.call "clearAllLists"
     "click #hide-completed": -> 
       Session.set "hide-completed", !Session.get("hide-completed")      
@@ -38,11 +49,11 @@ if Meteor.isClient
     Lists.find { userId: Meteor.userId() }
     
   Template.list.events =
-    "click #new-task": -> newTask( @_id )
-    "click #delete-list": -> 
+    "click .new-task": -> newTask( @_id )
+    "click .delete-list": -> 
       Lists.remove( @_id )
     "click .name": (e) -> 
-      return if e.target.id == "new-task"
+      return if e.target.className == "new-task"
       Session.set "editing-list", @_id
     "submit form": (e) ->
       @name = $(e.target).find("input").val()
@@ -62,10 +73,9 @@ if Meteor.isClient
       Tasks.find { listId: @_id }
  
   Template.list.rendered = ->
-    $("list-#{ @data._id } ul.tasks").sortable()
-    $("body").on 'keydown', (e) ->
-      return if Session.get("selected-task")
-      newTask( @data._id ) if (e.which == 13) && e.shiftKey
+    
+    # TODO: Sortable
+    # $("list-#{ @data._id } ul.tasks").sortable()
       
   Template.task.isSelected = ->
     Session.get("selected-task") == @_id
@@ -73,7 +83,12 @@ if Meteor.isClient
   Template.task.checkedIfCompleted = -> 
     "checked" if @completed
     
+  Template.task.taskClasses = -> 
+    "completed" if @completed
+    
   Template.task.events =
+    "click .delete-task": -> 
+      Tasks.remove @_id
     "click": (e) -> 
       if e.target.className == "completed-checkbox"
         checked = $(e.target).prop("checked")
@@ -92,3 +107,8 @@ if Meteor.isClient
           complete(@) 
         else
           newTask( @listId ) unless e.shiftKey
+  
+  # Template.task.rendered = ->
+  #   $("#task-#{ @data._id }").blur (e) ->
+  #     Session.set "selected-task", null
+

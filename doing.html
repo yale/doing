@@ -3,19 +3,20 @@
 </head>
 
 <body>
-  <div class="container" id="container">
+  <section class="container" id="container">
     {{> app}}
+  </section>
+  <footer>
+    <div class="content">
+      Made by Yale Spector in 4 hours for <a target="_blank" href="http://wework.com">WeWork</a>
   </div>
+  </footer>
 </body>
 
 <template name="app">
   {{>navbar}}
   {{#if currentUser}}
     {{>lists}}
-  {{else}}
-    <div class="jumbotron">
-      <h2>Please log in with Github to begin</h2>
-    </div>
   {{/if}}
 </template>
 
@@ -48,35 +49,35 @@
 </template>
 
 <template name="list">
-<div data-id="{{ _id }}" class="task-list panel panel-default">
-  <div class="panel-heading">
-    {{#if editingList}}
-    <form id="list-form">
-    <div class="input-group">
-      <input type="text" class="form-control" placeholder="New List" autofocus=autofocus id="list-{{_id}}" value="{{name}}" />
-      <span class="input-group-btn">
-        <a class="btn btn-danger" id="delete-list" href="#">
-          <i class="glyphicon glyphicon-trash"></i>
-        </a>
-      </span>
+<div class="col-sm-4">
+  <div data-id="{{ _id }}" class="task-list panel panel-default">
+    <div class="panel-heading">
+      <a class="pull-right btn btn-xs btn-link delete-list" href="#">
+        <i class="glyphicon glyphicon-remove"></i>
+      </a>
+      {{#if editingList}}
+      <form id="list-form">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="New List" autofocus=autofocus id="list-{{_id}}" value="{{name}}" />
+      </div>
+      </form>
+      {{else}}
+      <span class="name">{{name}}</span>
+      {{/if}}
     </div>
-    </form>
-    {{else}}
-    <span class="name">{{name}}</span>
-    {{/if}}
-  </div>
-  <div class="panel-body">
-    <ul class="tasks">
-    {{#each tasks}}
-      {{>task}}
-    {{/each}}
-    </ul>
-  </div>
-  <div class="panel-footer">
-    <a class="btn btn-xs btn-default" id="new-task" href="#">
-      <i class="glyphicon glyphicon-plus"></i>
-      Task
-    </a>
+    <div class="panel-body">
+      <ul class="tasks">
+      {{#each tasks}}
+        {{>task}}
+      {{/each}}
+      </ul>
+    </div>
+    <div class="panel-footer">
+      <a class="btn btn-xs btn-default new-task" href="#">
+        <i class="glyphicon glyphicon-plus"></i>
+        Task
+      </a>
+    </div>
   </div>
 </div>
 </template>
@@ -85,7 +86,7 @@
 <ul class="nav navbar-nav">
 <li>
   <a href="#" id="new-list">
-    <i class="glyphicon glyphicon-plus"></i>New List
+    <i class="glyphicon glyphicon-plus"></i> New List
   </a>
 </li>
 <li>
@@ -93,15 +94,27 @@
     {{#if hidingCompleted}}Show{{else}}Hide{{/if}} Completed
   </a>
 </li>
-<li><a id="clear-all-lists" href="#">Remove All Lists</a></li>
 </ul>
 </template>
 
 <template name="task">
-  <li class="task">
+  <li class="task {{taskClasses}}">
   {{#if isSelected}}
-  <input type="text" class="form-control" placeholder="New Task" autofocus=autofocus id="task-{{_id}}" value="{{text}}" />
+  <div class="input-group">
+    <span class="input-group-addon">
+    <input class="completed-checkbox" id="task-{{_id}}-completed" type="checkbox" {{ checkedIfCompleted }} />
+    </span>
+    <input type="text" class="form-control" placeholder="New Task" autofocus=autofocus id="task-{{_id}}" value="{{text}}" />
+    <span class="input-group-btn">
+      <a class="btn btn-xs delete-task" href="#">
+        <i class="glyphicon glyphicon-remove"></i>
+      </a>
+    </span>
+  </div>
   {{else}}
+  <a class="pull-right btn btn-xs delete-task" href="#">
+    <i class="glyphicon glyphicon-remove"></i>
+  </a>
   <input class="completed-checkbox" id="task-{{_id}}-completed" type="checkbox" {{ checkedIfCompleted }} />
   <span class="text">{{text}}</span>
   {{/if}}
