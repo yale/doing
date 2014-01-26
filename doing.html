@@ -1,0 +1,45 @@
+<head>
+  <title>doing</title>
+</head>
+
+<body>
+  {{> app}}
+</body>
+
+<template name="app">
+  <h1>Doing</h1>
+  <p>Shift+Enter to create a task</p>
+  {{>tasks}}
+</template>
+
+<template name="tasks">
+{{>toolbar}}
+<ul class="tasks">
+{{#each tasks}}
+  {{>task}}
+{{/each}}
+</ul>
+</template>
+
+<template name="toolbar">
+<a id="new-task" href="#">New Task</a>
+
+{{#if hidingCompleted}}
+<a id="hide-completed" href="#">Show Completed</a>
+{{else}}
+<a id="hide-completed" href="#">Hide Completed</a>
+{{/if}}
+<a id="clear-all" href="#">Clear All</a>
+</template>
+
+<template name="task">
+  <li class="task">
+  <input class="completed-checkbox" id="task-{{_id}}-completed" type="checkbox"
+  {{ checkedIfCompleted }} />
+  {{#if isSelected}}
+  <input placeholder="New Task" autofocus=autofocus id="task-{{_id}}" value="{{text}}" />
+  {{else}}
+  {{text}}
+  {{/if}}
+  </li>
+</template>
