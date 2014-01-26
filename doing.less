@@ -9,13 +9,18 @@
   width: 100%;
 }
 
+#new-list {
+  clear: both;
+}
+
 .task-list {
   width: 300px;
   float: left;
   margin-right: 20px;
   
-  &.empty {
-    text-align: center;
+  .name:hover {
+    cursor: text;
+    border-bottom: dashed 1px #999;
   }
 }
 
@@ -24,5 +29,12 @@ ul.tasks {
   
   li {
     list-style: none;
+  }
+}
+
+.task {
+
+  .text:hover {
+    cursor: text;
   }
 }

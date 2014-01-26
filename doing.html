@@ -45,64 +45,65 @@
 {{#each lists}}
   {{>list}}
 {{/each}}
-<div class="task-list empty">
-  <a id="new-list" class="btn btn-lg btn-default">
-    <i class="glyphicon glyphicon-plus"></i>
-    New List
-  </a>
-</div>
 </template>
 
 <template name="list">
 <div data-id="{{ _id }}" class="task-list panel panel-default">
   <div class="panel-heading">
     {{#if editingList}}
-    <input placeholder="New List" autofocus=autofocus id="list-{{_id}}"
-    value="{{name}}" />
-    <a class="btn btn-xs btn-danger" id="delete-list" href="#">
-      <i class="glyphicon glyphicon-trash"></i>
-    </a>
+    <form id="list-form">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="New List" autofocus=autofocus id="list-{{_id}}" value="{{name}}" />
+      <span class="input-group-btn">
+        <a class="btn btn-danger" id="delete-list" href="#">
+          <i class="glyphicon glyphicon-trash"></i>
+        </a>
+      </span>
+    </div>
+    </form>
     {{else}}
     <span class="name">{{name}}</span>
     {{/if}}
-    <a class="pull-right btn btn-xs btn-primary" id="new-task" href="#">
+  </div>
+  <div class="panel-body">
+    <ul class="tasks">
+    {{#each tasks}}
+      {{>task}}
+    {{/each}}
+    </ul>
+  </div>
+  <div class="panel-footer">
+    <a class="btn btn-xs btn-default" id="new-task" href="#">
       <i class="glyphicon glyphicon-plus"></i>
       Task
     </a>
   </div>
-  <div class="panel-body">
-  {{>tasks}}
-  </div>
 </div>
-</template>
-
-<template name="tasks">
-  <ul class="tasks">
-  {{#each tasks}}
-    {{>task}}
-  {{/each}}
-  </ul>
 </template>
 
 <template name="toolbar">
 <ul class="nav navbar-nav">
 <li>
+  <a href="#" id="new-list">
+    <i class="glyphicon glyphicon-plus"></i>New List
+  </a>
+</li>
+<li>
   <a id="hide-completed" href="#">
     {{#if hidingCompleted}}Show{{else}}Hide{{/if}} Completed
   </a>
 </li>
-<li><a id="clear-all" href="#">Clear All</a></li>
+<li><a id="clear-all-lists" href="#">Remove All Lists</a></li>
 </ul>
 </template>
 
 <template name="task">
   <li class="task">
-  <input class="completed-checkbox" id="task-{{_id}}-completed" type="checkbox"
-  {{ checkedIfCompleted }} />
   {{#if isSelected}}
-  <input placeholder="New Task" autofocus=autofocus id="task-{{_id}}" value="{{text}}" />
+  <input type="text" class="form-control" placeholder="New Task" autofocus=autofocus id="task-{{_id}}" value="{{text}}" />
   {{else}}
-  {{text}}
+  <input class="completed-checkbox" id="task-{{_id}}-completed" type="checkbox" {{ checkedIfCompleted }} />
+  <span class="text">{{text}}</span>
   {{/if}}
   </li>
 </template>
